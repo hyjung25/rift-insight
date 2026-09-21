@@ -1,5 +1,7 @@
 # Rift Insight
 
+**[Open the public website](https://hyjung25.github.io/rift-insight/)** — interactive demo, no installation required. The public website uses labeled synthetic data; real player lookup remains available in the server application.
+
 A focused League of Legends player analytics dashboard built with **Next.js App Router, TypeScript, React, and Tailwind CSS**. Enter a Riot ID, choose NA or KR, and analyze up to 20 recent ranked solo/duo games. The interface includes aggregate stats, champion performance, win-rate and CS/min charts, match details, consistent champion/role filters, and deterministic recent-pattern observations.
 
 No authentication, database, chatbot, model training, or rank benchmarks. All statistics describe the retrieved, filtered sample—not the entire season.
@@ -145,3 +147,11 @@ The normalized record preserves champion, role, duration, timestamp, outcomes, K
 ## Verification
 
 See `docs/verification.md` for the checks actually run. Live API verification requires a valid key and is separate from local fixture and mocked transport testing.
+
+## Public website deployment
+
+The public dashboard is hosted at **https://hyjung25.github.io/rift-insight/** on GitHub Pages. It preserves interactive filters, charts, match details, and sample-gated observations, but uses explicit synthetic fixtures. It does not offer live Riot ID lookup or transmit credentials. The portfolio links directly to the app.
+
+`npm run build:demo` builds the same dashboard in an isolated `.demo-build` directory with Next.js static export and `/rift-insight` as its base path. The script copies an explicit allowlist of UI, metric, fixture, and asset files; it excludes `.env` files and server API modules, strips `RIOT_API_KEY` from the build process environment, and generates a static page with `publicDemo` enabled. It does not modify the normal server app or its `.next` output. Deploy the contents of `.demo-build/out` (including `.nojekyll`) to the repository's `gh-pages` branch, which GitHub Pages serves from its root. Pushing source changes to `main` alone does not rebuild that branch; rerun the demo build and publish the output when changing the hosted dashboard.
+
+For future public live search, deploy the normal Next.js application to a host that supports Node server routes and configure an approved Riot production key in the host's private environment. GitHub Pages cannot run `/api/analyze`. Development/personal keys must not power a public live service. The local server integration remains fully functional and was verified independently with a live KR lookup.

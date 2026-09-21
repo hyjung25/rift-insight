@@ -31,10 +31,12 @@ import {
 import { champions, eligible, kda, perMinute, summarize } from "@/lib/metrics";
 import { recentPatterns } from "@/lib/insights";
 import { type Analysis, type Match, type Server, roleNames } from "@/lib/types";
+import { demoAnalysis } from "@/lib/demo";
 import { validateInput } from "@/lib/validation";
 import { ChampionChart, FarmingChart } from "./charts";
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 const portrait = (name: string) =>
-  `/assets/${["Ahri", "Syndra", "Orianna", "Akali", "Yone"].includes(name) ? name : "fallback"}.png`;
+  `${basePath}/assets/${["Ahri", "Syndra", "Orianna", "Akali", "Yone"].includes(name) ? name : "fallback"}.png`;
 function ChampionImage({
   name,
   className = "",
@@ -147,9 +149,11 @@ function MatchRow({ match: m }: { match: Match }) {
 export default function Dashboard({
   initial,
   liveAvailable,
+  publicDemo = false,
 }: {
   initial: Analysis | null;
   liveAvailable: boolean;
+  publicDemo?: boolean;
 }) {
   const [data, setData] = useState(initial),
     [id, setId] = useState(""),
@@ -185,6 +189,11 @@ export default function Dashboard({
   const exclusions = filtered.length - rows.length;
   async function analyze(demo = false) {
     setError("");
+    if (publicDemo) {
+      setData(demoAnalysis(server));
+      resetFilters();
+      return;
+    }
     const body = { riotId: demo ? "Rift Explorer#DEMO" : id, server, demo };
     try {
       validateInput(body);
@@ -271,7 +280,11 @@ export default function Dashboard({
         Skip to dashboard
       </a>
       <aside className="sidebar" inert={help}>
-        <a className="brand" href="/" aria-label="Rift Insight home">
+        <a
+          className="brand"
+          href={`${basePath}/`}
+          aria-label="Rift Insight home"
+        >
           <span className="brand-mark">
             <Activity size={25} />
           </span>
@@ -361,6 +374,20 @@ export default function Dashboard({
               <span className="status-dot" /> Ranked Solo / Duo
             </span>
           </div>
+          {publicDemo && (
+            <p className="public-demo-note">
+              Public interactive demo · Sample data only. Live Riot ID search is
+              available in the server app; public live access requires Riot
+              production approval.{" "}
+              <a
+                href="https://github.com/hyjung25/rift-insight"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Source &amp; setup ↗
+              </a>
+            </p>
+          )}
           <form className="search-form" onSubmit={submit}>
             <Search size={20} />
             <label className="sr-only" htmlFor="riot-id">
@@ -369,10 +396,11 @@ export default function Dashboard({
             <input
               id="riot-id"
               placeholder="Search Riot ID · gameName#tagLine"
-              value={id}
+              value={publicDemo ? "Rift Explorer#DEMO · sample player" : id}
+              readOnly={publicDemo}
               onChange={(e) => setId(e.target.value)}
               maxLength={30}
-              required
+              required={!publicDemo}
               autoComplete="off"
             />
             <div className="server-select">
@@ -395,7 +423,13 @@ export default function Dashboard({
               ) : (
                 <Search size={16} />
               )}
-              <span>{loading ? "Analyzing…" : "Analyze player"}</span>
+              <span>
+                {loading
+                  ? "Analyzing…"
+                  : publicDemo
+                    ? "Explore demo"
+                    : "Analyze player"}
+              </span>
               <ArrowRight size={16} />
             </button>
           </form>
@@ -445,9 +479,11 @@ export default function Dashboard({
                     Realistic sample matches. Not a real player’s history.
                   </span>
                   <button onClick={() => setHelp(true)}>
-                    {liveAvailable
-                      ? "How live lookup works"
-                      : "Connect your API key"}{" "}
+                    {publicDemo
+                      ? "About this demo"
+                      : liveAvailable
+                        ? "How live lookup works"
+                        : "Connect your API key"}{" "}
                     <ArrowUpRight size={14} />
                   </button>
                 </div>
@@ -858,14 +894,18 @@ export default function Dashboard({
               TypeScript, and Riot’s public API.
             </p>
             <h3>
-              {liveAvailable
-                ? "Live lookups are configured"
-                : "Connect your Riot API key"}
+              {publicDemo
+                ? "Public interactive demo"
+                : liveAvailable
+                  ? "Live lookups are configured"
+                  : "Connect your Riot API key"}
             </h3>
             <p>
-              {liveAvailable
-                ? "Enter gameName#tagLine, choose NA or KR, and select Analyze player. Riot requests run only on the server."
-                : "Copy .env.example to .env.local, replace the placeholder in RIOT_API_KEY with your Riot developer key, and restart the app. Never put the key in a public environment variable."}
+              {publicDemo
+                ? "This public website uses fixed synthetic matches. Filters, charts, and match details work entirely in your browser. The full server application supports real Riot lookups; publicly offering them requires Riot production access."
+                : liveAvailable
+                  ? "Enter gameName#tagLine, choose NA or KR, and select Analyze player. Riot requests run only on the server."
+                  : "Copy .env.example to .env.local, replace the placeholder in RIOT_API_KEY with your Riot developer key, and restart the app. Never put the key in a public environment variable."}
             </p>
             <div className="modal-note">
               <FlaskConical size={20} />

@@ -20,6 +20,8 @@ These are concise excerpts or summaries, not the entire conversation.
 5. **Troubleshooting:** After the app reported an invalid or expired key, restart and verify server configuration and Riot authentication. A replacement key enabled a successful live KR lookup. Credentials are intentionally omitted from this log.
 6. **Submission preparation:** Apply the assignment requirements for a GitHub repository, a 3–5 sentence API explanation, local setup/authentication instructions, a short AI prompt log, portfolio entry, demonstration video, and submission form.
 
+7. **Public website:** The user requested a website accessible without a local server. Added an explicit, credential-free GitHub Pages demo built from the same dashboard and linked it from the portfolio; preserved the separate Next.js server application for live Riot lookups.
+
 ## Division of work
 
 The user supplied the product requirements and assignment rubric, obtained Riot API access, and reported runtime errors. Codex generated and revised the implementation, documentation, and tests, and performed the recorded local checks. Review the code and metric definitions before presenting; this log does not claim that generated code was written manually or that an AI model was trained.
