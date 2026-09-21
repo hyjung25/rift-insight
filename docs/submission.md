@@ -7,8 +7,8 @@
 - [x] AI tool and key prompt log in `prompt_log.md`.
 - [x] Build, type checks, 21 automated tests, and desktop/mobile checks recorded.
 - [x] A live KR lookup returned 20 matches without failed requests.
-- [ ] Publish the project to the chosen GitHub repository and verify grader access.
-- [ ] Add the project to the portfolio.
+- [x] Publish the project to the public GitHub repository: https://github.com/hyjung25/rift-insight
+- [x] Push the project card to the public portfolio repository: https://github.com/hyjung25/hyjung25.github.io (commit 170844b).
 - [x] Record a 64-second captioned live demonstration (local artifact).
 - [ ] Upload a short demonstration video to YouTube or Google Drive.
 - [ ] Verify the video link in an incognito window.
