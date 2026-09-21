@@ -9,6 +9,7 @@
 - [x] A live KR lookup returned 20 matches without failed requests.
 - [ ] Publish the project to the chosen GitHub repository and verify grader access.
 - [ ] Add the project to the portfolio.
+- [x] Record a 64-second captioned live demonstration (local artifact).
 - [ ] Upload a short demonstration video to YouTube or Google Drive.
 - [ ] Verify the video link in an incognito window.
 - [ ] Submit repository/portfolio/video links through the course Google form before the course deadline.
@@ -36,6 +37,10 @@ A video-hosting URL is still required. No form submission is claimed.
 This project does not train an ML model or use an AI coach. It creates a normalized dataset structure that could support future experiments.
 
 For a portfolio's public live demo, use the explicitly labeled fixture mode without a key until Riot's production requirements are met. A private/local development key must not be deployed for public access. The existing Next.js server route is the backend that addresses the assignment's warning about keyed browser JavaScript: browser code calls `/api/analyze`; only the server contacts Riot with the key.
+
+## Recorded demonstration
+
+A 64-second, 1440×1000 captioned WebM recording is saved locally at `artifacts/rift-insight-demo.webm` (excluded from Git). It shows a real KR lookup, summary statistics, charts, a champion filter, deterministic patterns, expanded match details, and metric definitions. It has on-screen explanations and no audio, and does not show credentials. Upload this file to YouTube or Google Drive for the required shareable video link; the local file itself is not a submission URL.
 
 ## Suggested 60–90 second video walkthrough
 

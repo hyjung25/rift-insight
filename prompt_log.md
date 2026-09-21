@@ -5,7 +5,7 @@
 - **OpenAI Codex coding assistant:** implementation, debugging, tests, and documentation. The exact model version was not independently recorded.
 - **Web research tool:** checked Riot's official account/match API documentation, routing, key requirements, rate limits, and Data Dragon usage.
 - **Local terminal and Node.js/npm:** installed dependencies, ran TypeScript checks, built the Next.js app, and ran tests.
-- **Playwright with local Chrome:** verified desktop/mobile interactions and captured screenshots. The Codex in-app browser connection was unavailable in this session, so local Chrome was used instead.
+- **Playwright with local Chrome:** verified desktop/mobile interactions, captured screenshots, and recorded a captioned live demonstration. The Codex in-app browser connection was unavailable in this session, so local Chrome was used instead.
 
 No AI model runs inside the app. “Recent patterns” uses deterministic, sample-gated TypeScript rules, not generated coaching or ML predictions.
 
