@@ -1,0 +1,22 @@
+{
+  "metadata": { "matchId": "NA1_EXAMPLE", "participants": ["SANITIZED_PUUID"] },
+  "info": {
+    "queueId": 420,
+    "gameDuration": 1200,
+    "gameStartTimestamp": 1790017200000,
+    "participants": [{
+      "puuid": "SANITIZED_PUUID",
+      "championName": "Ahri",
+      "teamPosition": "MIDDLE",
+      "win": true,
+      "kills": 8,
+      "deaths": 2,
+      "assists": 6,
+      "totalMinionsKilled": 150,
+      "neutralMinionsKilled": 10,
+      "totalDamageDealtToChampions": 16000,
+      "visionScore": 20,
+      "gameEndedInEarlySurrender": false
+    }]
+  }
+}
