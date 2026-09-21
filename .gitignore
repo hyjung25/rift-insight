@@ -6,3 +6,6 @@ node_modules/
 .DS_Store
 artifacts/
 .demo-build/
+
+# Original recording is hosted in the portfolio repository.
+/15113HW3.webm

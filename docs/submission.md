@@ -18,7 +18,9 @@ Chosen repository: https://github.com/hyjung25/rift-insight
 
 Portfolio project: https://hyjung25.github.io/#rift-insight
 
-A video-hosting URL is still required. No form submission is claimed.
+Portfolio video page: https://hyjung25.github.io/rift-insight-demo.html
+
+The portfolio-hosted recording is accessible without signing in. The assignment specifically requests a YouTube or Google Drive video link, so uploading there and checking anonymous access remain submission steps. No form submission is claimed.
 
 ## Ready-to-use portfolio entry
 
@@ -39,6 +41,8 @@ This project does not train an ML model or use an AI coach. It creates a normali
 For a portfolio's public live demo, use the explicitly labeled fixture mode without a key until Riot's production requirements are met. A private/local development key must not be deployed for public access. The existing Next.js server route is the backend that addresses the assignment's warning about keyed browser JavaScript: browser code calls `/api/analyze`; only the server contacts Riot with the key.
 
 ## Recorded demonstration
+
+The user-recorded `15113HW3.webm` is the primary demonstration, approximately 1 minute 42 seconds long. It is linked from the portfolio and README at https://hyjung25.github.io/rift-insight-demo.html . The uploaded copy has repaired duration/seek metadata without re-encoding the audio or video; the original local file is unchanged.
 
 A 64-second, 1440×1000 captioned WebM recording is saved locally at `artifacts/rift-insight-demo.webm` (excluded from Git). It shows a real KR lookup, summary statistics, charts, a champion filter, deterministic patterns, expanded match details, and metric definitions. It has on-screen explanations and no audio, and does not show credentials. Upload this file to YouTube or Google Drive for the required shareable video link; the local file itself is not a submission URL.
 

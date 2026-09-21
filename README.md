@@ -2,6 +2,9 @@
 
 **[Open the public website](https://hyjung25.github.io/rift-insight/)** — interactive demo, no installation required. The public website uses labeled synthetic data; real player lookup remains available in the server application.
 
+**[Watch the video walkthrough](https://hyjung25.github.io/rift-insight-demo.html)** — the recorded app demonstration (`15113HW3.webm`, approximately 1 minute 42 seconds), with playback and download controls.
+
+
 A focused League of Legends player analytics dashboard built with **Next.js App Router, TypeScript, React, and Tailwind CSS**. Enter a Riot ID, choose NA or KR, and analyze up to 20 recent ranked solo/duo games. The interface includes aggregate stats, champion performance, win-rate and CS/min charts, match details, consistent champion/role filters, and deterministic recent-pattern observations.
 
 No authentication, database, chatbot, model training, or rank benchmarks. All statistics describe the retrieved, filtered sample—not the entire season.
