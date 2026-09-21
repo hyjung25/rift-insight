@@ -22,6 +22,18 @@ Repository: https://github.com/hyjung25/rift-insight · [Portfolio project](http
 | Local demo | `http://localhost:3000` after setup below | No | The same synthetic fixtures |
 | Local live search | `http://localhost:3000` with a configured server key | Yes | Up to 20 recent ranked solo/duo matches returned by Riot |
 
+### Why live search currently runs locally
+
+**Riot does not require every API application to run on localhost.** Local live search is the current deployment choice for this assignment, for three separate reasons:
+
+1. **Key permissions:** this project's live testing used a development key. It does not authorize a public live-search service; a production application needs Riot's appropriate approval and production key. Moving the same development key to a cloud environment does not change its permitted use. See [Riot's API key policy](https://developer.riotgames.com/docs/portal#web-apis).
+2. **Hosting capability:** the public site uses GitHub Pages, which serves static HTML, CSS, and JavaScript. It cannot execute this project's Next.js `/api/analyze` server route. Running `npm run dev` locally starts both the browser interface and that backend. See [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages).
+3. **Secret protection:** the backend reads `RIOT_API_KEY` from `.env.local` and calls Riot on the user's behalf. Putting that key into static frontend JavaScript would expose it to visitors. A cloud backend can also keep a key private, but a static website alone cannot provide this server-side protection.
+
+The local request path is **browser → local Next.js server → Riot → normalized results → browser**. The public demo instead reads synthetic fixtures inside the browser, so it needs neither an API key nor a running local server. It is an interactive demonstration of the interface, not evidence of a live API call; live verification is documented separately.
+
+To offer real searches online later, obtain Riot production access, deploy the full Next.js app to a Node/server-capable host, configure the production key as a private server environment variable, and adapt the current per-process cache/limiter to the hosting architecture. Visitors would then use a public URL without installing anything locally. A production key by itself does not add backend support to GitHub Pages.
+
 ### 1. Use the public demo — no installation
 
 1. Open **https://hyjung25.github.io/rift-insight/**. You can also select **Open App** on the [portfolio project](https://hyjung25.github.io/#rift-insight).
@@ -159,11 +171,30 @@ Patterns are ordinary deterministic TypeScript rules, not AI coaching. A most-pl
 
 Twenty games is a small, potentially biased sample. Roles, game lengths, champion choice, patch changes, missing matches and remakes affect interpretation. The app never claims causality, predicts wins, invents rank benchmarks, or measures overall skill. No rank is displayed because league data is outside this scoped integration. A regional list can include transferred-server matches; those are omitted without backfilling, so fewer than twenty may remain. Cached data may be two minutes old. Asset versions may lag a new champion; the image component falls back to text if an image is unavailable.
 
-## Riot requirements and attribution
+## Riot API access conditions and attribution
 
-Riot's current portal says development keys deactivate every 24 hours and are for prototyping. Personal keys are for private/personal use; public alpha/beta access also requires a production key. Before publishing a live app, register the product and obtain the appropriate production access. Keep registration metadata current and review policies before release. A public demo without live access still uses Riot IP, so product registration requirements should be reviewed. Do not deploy a development/personal key for public consumption.
+The following summarizes the conditions relevant to this project, checked **September 21, 2026**. The linked official policies remain authoritative and may change.
 
-The visible footer includes Riot's required non-endorsement notice. Champion portraits and splash art are official Data Dragon game-specific static assets; no Riot corporate logo is used. Bundled portraits use version `16.18.1`, the version listed by official docs when checked. New champion images use the same official CDN with a text fallback. See [`public/assets/ATTRIBUTION.md`](public/assets/ATTRIBUTION.md).
+### API key types
+
+| Key | Intended use | Conditions relevant to Rift Insight |
+|---|---|---|
+| Development | Prototyping and testing | Generated through the developer portal; deactivates every 24 hours. Regenerate it for continued testing. Not for a publicly available live application. |
+| Personal | Individual use or a small private community | Requires product registration and a description. Standard APIs only; no Tournaments API or rate-limit increases. Cannot power public access, including open alpha/beta testing. |
+| Production | A service offered to players publicly | Apply through product registration; Riot reviews the project, typically using a working prototype. Approval is not automatic. Use one product per production key. |
+
+A free school project is not automatically exempt from public-use restrictions. A public source repository and a publicly accessible keyed service are different: publishing this source does not publish its local secret. Source: [Riot developer portal — key types](https://developer.riotgames.com/docs/portal#web-apis).
+
+### Request limits and failures
+
+Riot documents personal-key limits of 20 requests/second and 100 requests/2 minutes per region. Application, method, and service limits may all apply. On HTTP 429, pause for `Retry-After`; do not keep retrying immediately. Invalid/expired keys must be corrected rather than repeatedly retried. The app's concurrency limit, pacing, caching, and bounded retries implement this behavior. Source: [Riot rate limits and response codes](https://developer.riotgames.com/docs/portal#rate-limiting).
+
+### Product registration, security, and permitted use
+
+- Register the product with Riot and keep its description/features current for review. The League policy requires registration for products serving players even when they do not use documented APIs. A fixture-only demo does not establish Riot approval or remove applicable registration/IP requirements. **This repository does not claim that Riot registration or production approval has been completed.** [General registration policy](https://developer.riotgames.com/policies/general), [League registration policy](https://developer.riotgames.com/docs/lol#developer-api-policy).
+- Access Riot over HTTPS and keep API keys out of source code and browser bundles. This app uses a server environment variable; `.env.local` is ignored by Git. Rotate an exposed key; removing a committed secret from the newest revision does not remove earlier history. [Riot security requirements](https://developer.riotgames.com/policies/general#developer-safety).
+- Use supported APIs and respect game integrity: no unfair competitive advantage, de-anonymization of hidden players, or unofficial MMR/ELO replacement. This project shows retrospective match statistics and sample-based observations. [Riot general policies](https://developer.riotgames.com/policies/general).
+- Use permitted assets and display Riot's non-endorsement notice. Rift Insight uses official Data Dragon champion portraits/splash art and shows the notice in its footer; it does not use a Riot corporate logo. Bundled portraits use version `16.18.1`, with a text fallback for unavailable images. See [Data Dragon documentation](https://developer.riotgames.com/docs/lol#data-dragon) and [`public/assets/ATTRIBUTION.md`](public/assets/ATTRIBUTION.md).
 
 ## Code walkthrough for class
 
