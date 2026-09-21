@@ -33,3 +33,7 @@ Automated server integration tests still replace fetch with local responses and 
 The in-app browser tool could not initialize in this environment. Verification used temporary Playwright with the locally installed Chrome instead. The app's bundled Node could not load macOS native build modules, so builds and checks used a temporary official Node 24 runtime. Neither workaround changes the project's standard Node/npm setup.
 
 Public deployment is not performed. Before exposing live access, obtain Riot production approval and address the per-process cache/limiter limitation documented in the README.
+
+## Public website verification
+
+The credential-free Next.js static export was deployed to https://hyjung25.github.io/rift-insight/ using the `gh-pages` branch. GitHub Pages deployment 35642423031 succeeded. Chrome tests against the actual public URL passed for image loading, initial metrics, combined champion/role filters, empty state, reset, demo-region selection, all-match expansion, match details, help, home navigation, and mobile overflow. No `/api/analyze` requests, failed resource responses, or uncaught page errors occurred. The public artifact was scanned for Riot keys and environment files before publication; none were present. The normal server build, type check, and 21 tests also passed after the public-site changes.
