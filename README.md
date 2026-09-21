@@ -14,40 +14,82 @@ Rift Insight uses JavaScript's built-in `fetch` with `async/await` inside a Next
 
 Repository: https://github.com/hyjung25/rift-insight · [Portfolio project](https://hyjung25.github.io/#rift-insight)
 
-## Run locally
+## Choose how to use the app
 
-Use Node.js 20.9+ (Node 24 LTS recommended) and npm.
+| Mode | Where to open it | API key needed? | Data |
+|---|---|---|---|
+| Public website demo | [hyjung25.github.io/rift-insight](https://hyjung25.github.io/rift-insight/) | No | 20 fixed synthetic matches |
+| Local demo | `http://localhost:3000` after setup below | No | The same synthetic fixtures |
+| Local live search | `http://localhost:3000` with a configured server key | Yes | Up to 20 recent ranked solo/duo matches returned by Riot |
+
+### 1. Use the public demo — no installation
+
+1. Open **https://hyjung25.github.io/rift-insight/**. You can also select **Open App** on the [portfolio project](https://hyjung25.github.io/#rift-insight).
+2. The dashboard starts with `Rift Explorer#DEMO`. The banner explicitly identifies the data as synthetic; this is not a real player's history.
+3. Use **All champions** and **All roles** to filter the dashboard. The summary cards, champion breakdowns, charts, recent patterns, and match history update together. Use **Reset** to clear the filters.
+4. Select **View all 20 matches**, then expand an individual match for damage and vision details. Open **How metrics are calculated** for the formulas and exclusions.
+5. To reset the sample profile for a selected server label, choose **Korea (KR)** or **North America (NA)** and select **Explore demo**. The fixtures are the same for both selections; switching the label does not retrieve real regional matches.
+
+**The public website does not support real Riot ID searches.** Its sample-player field is read-only, and it makes no authenticated Riot API requests. GitHub Pages hosts static files and cannot run the Next.js API backend. Public live search would require server hosting and Riot production access; the private development key is not included in the deployed site.
+
+### 2. Install and run locally
+
+Install Node.js 20.9 or newer (Node 24 LTS recommended), npm, and Git. Then run:
 
 ```sh
-# From the project directory containing package.json:
-npm install
+git clone https://github.com/hyjung25/rift-insight.git
+cd rift-insight
+npm ci
 npm run dev
 ```
 
-Open http://localhost:3000. Without a key, the initial screen explicitly shows **demo data**: 20 fixed synthetic matches for `Rift Explorer#DEMO`. This identity never changes to the searched player's name. Bundled champion art makes the demo independent of Riot asset requests.
+Open **http://localhost:3000** and keep the terminal running. Stop the server with **Ctrl+C**. If you already have the source, run these npm commands from the directory containing `package.json` instead of cloning again.
 
-For live lookups:
+**Local demo:** no key or `.env.local` file is needed. With no key configured, the app opens the labeled 20-match demo automatically. Its filters, charts, and expandable history work just like the public demo. The search form in the local app is for live lookups; without a key, submitting a real Riot ID shows a configuration error. Select **Explore demo data** to return to the sample dashboard.
+
+If a key is already configured, the local app opens with a search screen; select **Explore the demo** to use fixtures explicitly. To make demo mode the startup default again, remove or comment out the `RIOT_API_KEY` entry in `.env.local` and restart the server. A failed live request never silently substitutes demo data.
+
+### 3. Enable real Riot API lookups locally
+
+1. Sign in to the [Riot Developer Portal](https://developer.riotgames.com/) and obtain a development API key. Riot development keys deactivate every 24 hours; regenerate yours if it expires. These keys are for local/private development, not a public live service. See [Riot's key requirements](https://developer.riotgames.com/docs/portal).
+2. Stop the running local server with **Ctrl+C**. On the first setup, copy the example environment file:
+
+   ```sh
+   cp .env.example .env.local
+   ```
+
+   On Windows PowerShell, use `Copy-Item .env.example .env.local`. If `.env.local` already exists, edit it directly rather than overwriting it.
+
+3. Open `.env.local` in your editor and replace the placeholder with your own key:
+
+   ```dotenv
+   RIOT_API_KEY=your_riot_api_key_here
+   ```
+
+4. Save the file and restart with `npm run dev`. Open **http://localhost:3000**.
+5. Enter the player's Riot ID as **gameName#tagLine**, choose the actual server (**NA** or **KR**), and select **Analyze player**. For example, `Hide on bush#KR1` uses **Korea (KR)**. The dashboard displays the returned identity, number of analyzed matches, and any partial-result notices.
+
+The key is used only by the Next.js server in the `X-Riot-Token` header. Never use a `NEXT_PUBLIC_` environment variable for it or put it in browser code. `.env.local` is excluded by `.gitignore`; only the placeholder `.env.example` belongs in Git. Do not paste keys into the README, screenshots, videos, or chat. `lib/riot.ts` imports `server-only` to prevent accidental client imports.
+
+**Troubleshooting:**
+
+- **“Live lookups need RIOT_API_KEY”**: confirm `.env.local` is next to `package.json`, replace the placeholder, save, and restart.
+- **“Invalid or expired” / rejected key**: generate a fresh key, update `.env.local`, and restart. Restarting alone does not renew an expired key.
+- **Account not found**: check both the game name and tag, and select the correct server.
+- **No matches**: the app only analyzes recent ranked solo/duo games (queue 420) on the selected server.
+- **Rate limit**: wait for the displayed retry interval; avoid repeated searches while waiting.
+
+### Local checks and production-style server
+
+Run the checks from the project directory:
 
 ```sh
-cp .env.example .env.local
-```
-
-Replace the placeholder in `.env.local`:
-
-```dotenv
-RIOT_API_KEY=your_riot_api_key_here
-```
-
-Get a key from the [Riot Developer Portal](https://developer.riotgames.com/). Restart the server after changing it. Never use `NEXT_PUBLIC_` for a secret. `.env*` is ignored except `.env.example`; no key is included in source, response payloads, or logs. `lib/riot.ts` imports `server-only` to prevent accidental client imports.
-
-When a key exists, the app starts with a search state. Demo data can still be selected explicitly. **A failed live request never falls back to demo.** If an unsuccessful search clears the previous dashboard, the error state belongs to the newly requested player, so stale statistics cannot be mistaken for that player's data.
-
-```sh
-npm run test
+npm test
 npm run typecheck
 npm run build
-npm start
 ```
+
+To run the compiled server locally, stop the development server and run `npm start`, then open **http://localhost:3000**. This still uses your local server configuration; it does not publish a website. For the credential-free public build, see [Public website deployment](#public-website-deployment).
 
 ## Public API and request flow
 
